@@ -35,13 +35,13 @@ const _layout = () => {
   return (
     <Tabs
       screenOptions={{
-        animation: 'fade',
-        transitionSpec: {
-          animation: 'timing',
-          config: {
-            duration: 300,
-          }
-        },
+        // animation: 'shift',
+        // transitionSpec: {
+        //   animation: 'timing',
+        //   config: {
+        //     duration: 300,
+        //   }
+        // },
         tabBarShowLabel: false,
         tabBarItemStyle: {
           width: '100%',
