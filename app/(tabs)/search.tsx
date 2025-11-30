@@ -3,6 +3,7 @@ import SearchBar from "@/components/SearchBar"
 import { icons } from "@/constants/icons"
 import { images } from "@/constants/images"
 import { fetchMovies } from "@/services/api"
+import { updateSearchCount } from "@/services/appwrite"
 import { useFetch } from "@/services/useFetch"
 import { useEffect, useState } from "react"
 import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native'
@@ -17,26 +18,30 @@ const Search = () => {
     refetch: loadMovies,
     reset,
   } = useFetch(() => fetchMovies({ 
-    query: debouncedSearchQuery
+    query: searchQuery
   }))
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       setDebouncedSearchQuery(searchQuery);
+      
+      if (searchQuery.trim()) {
+        await loadMovies();
+      } else {
+        reset()
+      }
     }, 500)
 
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery])
 
   useEffect(() => {
-    if (searchQuery.trim()) {
-      loadMovies();
-    } else {
-      reset();
-      // loadMovies();
+    if (movies && movies.length > 0 && !moviesLoading && debouncedSearchQuery.trim()) {
+      updateSearchCount(debouncedSearchQuery.trim(), movies[0])
+        .catch(err => console.error("Failed to update search count:", err));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchQuery])
+  }, [movies, moviesLoading, debouncedSearchQuery]);
 
   return (
     <View className="flex-1 bg-primary">
