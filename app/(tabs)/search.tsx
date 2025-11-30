@@ -5,7 +5,7 @@ import { images } from "@/constants/images"
 import { fetchMovies } from "@/services/api"
 import { updateSearchCount } from "@/services/appwrite"
 import { useFetch } from "@/services/useFetch"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ActivityIndicator, FlatList, Image, Text, View } from 'react-native'
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +20,7 @@ const Search = () => {
   } = useFetch(() => fetchMovies({ 
     query: searchQuery
   }))
+  const firstLoad = useRef<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -28,7 +29,8 @@ const Search = () => {
       if (searchQuery.trim()) {
         await loadMovies();
       } else {
-        reset()
+        if (firstLoad.current) reset();
+        else firstLoad.current = true;
       }
     }, 500)
 

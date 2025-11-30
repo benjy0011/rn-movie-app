@@ -31,7 +31,6 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
         }
       })
 
-      console.log("updated");
     } else {
       await database.createRow({
         databaseId: DATABASE_ID,
@@ -45,7 +44,7 @@ export const updateSearchCount = async (query: string, movie: Movie) => {
           poster_url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         }
       })
-      console.log("added")
+
     }
   } catch (error) {
     console.log("Error updating search count:", error);
